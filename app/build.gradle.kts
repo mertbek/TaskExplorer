@@ -7,7 +7,7 @@ plugins {
 
 android {
     namespace = "com.mertbek.taskexplorer"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.mertbek.taskexplorer"
@@ -63,6 +63,8 @@ dependencies {
     implementation(libs.androidx.work.runtime.ktx)
 
     implementation(libs.androidx.swiperefreshlayout)
+    implementation(libs.androidx.runtime.livedata)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
