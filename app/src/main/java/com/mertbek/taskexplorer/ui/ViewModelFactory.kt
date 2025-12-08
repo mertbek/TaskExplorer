@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.mertbek.taskexplorer.data.local.SessionManager
 import com.mertbek.taskexplorer.data.repository.TaskRepository
 import com.mertbek.taskexplorer.ui.login.LoginViewModel
+import com.mertbek.taskexplorer.ui.main.TaskViewModel
 
 class ViewModelFactory(
     private val repository: TaskRepository,
@@ -18,6 +19,12 @@ class ViewModelFactory(
             return LoginViewModel(repository, sessionManager) as T
         }
 
-        throw IllegalArgumentException("Unknown ViewModel class")
+        else if (modelClass.isAssignableFrom(TaskViewModel::class.java)) {
+            if (sessionManager == null) throw IllegalArgumentException("SessionManager gerekli")
+            @Suppress("UNCHECKED_CAST")
+            return TaskViewModel(repository, sessionManager) as T
+        }
+
+        throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")
     }
 }

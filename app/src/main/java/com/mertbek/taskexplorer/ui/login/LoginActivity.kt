@@ -60,6 +60,11 @@ fun LoginScreen(viewModel: LoginViewModel) {
     LaunchedEffect(key1 = loginResult) {
         if (loginResult) {
             Toast.makeText(context, "Giriş Başarılı!", Toast.LENGTH_SHORT).show()
+
+            val intent = android.content.Intent(context, com.mertbek.taskexplorer.ui.main.MainActivity::class.java)
+            context.startActivity(intent)
+
+            (context as? android.app.Activity)?.finish()
         }
     }
 
