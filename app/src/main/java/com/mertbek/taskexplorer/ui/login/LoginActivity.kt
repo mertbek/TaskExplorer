@@ -44,6 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.mertbek.taskexplorer.TaskExplorerApp
 import com.mertbek.taskexplorer.ui.ViewModelFactory
+import com.mertbek.taskexplorer.ui.main.MainActivity
 
 class LoginActivity : ComponentActivity() {
 
@@ -51,6 +52,16 @@ class LoginActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         val app = application as TaskExplorerApp
+
+        val token = app.sessionManager.fetchAuthToken()
+
+        if (!token.isNullOrBlank()) {
+            val intent = android.content.Intent(this, MainActivity::class.java)
+            startActivity(intent)
+            finish()
+            return
+        }
+
         val factory = ViewModelFactory(app.repository, app.sessionManager)
 
         setContent {

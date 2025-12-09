@@ -65,4 +65,12 @@ class TaskViewModel(
             }
         }
     }
+
+    fun getUserInfo(): Map<String, String> {
+        return sessionManager.fetchUserInfo()
+    }
+
+    fun logout() {
+        sessionManager.clearSession()
+    }
 }

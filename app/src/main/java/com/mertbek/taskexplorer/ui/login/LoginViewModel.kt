@@ -36,7 +36,17 @@ class LoginViewModel(
                 val response = repository.login(LoginRequest(username, password))
 
                 if (response.isSuccessful && response.body() != null) {
+                    val body = response.body()!!
                     val token = response.body()!!.oauth.accessToken
+
+                    val user = body.userInfo
+                    val fullName = "${user.firstName} ${user.lastName}"
+                    sessionManager.saveUserInfo(
+                        name = fullName,
+                        personalNo = user.personalNo.toString(),
+                        unit = user.businessUnit ?: "-"
+                    )
+
                     sessionManager.saveAuthToken(token)
                     _loginResult.value = true
                 } else {

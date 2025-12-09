@@ -8,6 +8,9 @@ class SessionManager(context: Context) {
 
     companion object {
         const val KEY_ACCESS_TOKEN = "access_token"
+        const val KEY_USER_NAME = "user_name"
+        const val KEY_USER_ID = "user_id"
+        const val KEY_USER_UNIT = "user_unit"
     }
 
     fun saveAuthToken(token: String) {
@@ -22,5 +25,22 @@ class SessionManager(context: Context) {
 
     fun clearSession() {
         prefs.edit().clear().apply()
+    }
+
+    fun saveUserInfo(name: String, personalNo: String, unit: String) {
+        prefs.edit().apply {
+            putString(KEY_USER_NAME, name)
+            putString(KEY_USER_ID, personalNo)
+            putString(KEY_USER_UNIT, unit)
+            apply()
+        }
+    }
+
+    fun fetchUserInfo(): Map<String, String> {
+        return mapOf(
+            "name" to (prefs.getString(KEY_USER_NAME, "Kullanıcı") ?: "Kullanıcı"),
+            "id" to (prefs.getString(KEY_USER_ID, "") ?: ""),
+            "unit" to (prefs.getString(KEY_USER_UNIT, "") ?: "")
+        )
     }
 }
