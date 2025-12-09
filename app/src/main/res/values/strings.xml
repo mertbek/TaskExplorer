@@ -1,3 +1,29 @@
 <resources>
     <string name="app_name">Task Explorer</string>
+
+    <string name="login_title">Task Explorer</string>
+    <string name="username_label">Username</string>
+    <string name="password_label">Password</string>
+    <string name="login_button">Login</string>
+    <string name="login_success">Login Successful!</string>
+    <string name="login_failed">Login failed! Check credentials.</string>
+    <string name="error_empty_fields">Username or password cannot be empty!</string>
+    <string name="exit_press_again">Press back again to exit</string>
+
+    <string name="search_placeholder">Search task...</string>
+    <string name="qr_scan_desc">QR Scan</string>
+    <string name="clear_desc">Clear</string>
+    <string name="menu_desc">Menu</string>
+    <string name="no_tasks_message">No tasks to display.</string>
+    <string name="camera_permission_required">Camera permission required!</string>
+
+    <string name="menu_tasks">Tasks</string>
+    <string name="menu_logout">Logout</string>
+    <string name="menu_languages">Languages</string>
+    <string name="user_default">User</string>
+    <string name="id_label">ID: </string>
+
+    <string name="error_unknown">An unexpected error occurred. Please try again.</string>
+    <string name="error_token_missing">Token not found. Please login again.</string>
+    <string name="error_session_expired">Session expired, please login again.</string>
 </resources>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Task Explorer</string>
+
+    <string name="login_title">Task Explorer</string>
+    <string name="username_label">Kullanıcı Adı</string>
+    <string name="password_label">Şifre</string>
+    <string name="login_button">Giriş Yap</string>
+    <string name="login_success">Giriş Başarılı!</string>
+    <string name="login_failed">Giriş başarısız! Bilgileri kontrol edin.</string>
+    <string name="error_empty_fields">Kullanıcı adı ve ya şifre boş olamaz!</string>
+    <string name="exit_press_again">Çıkmak için tekrar basın</string>
+
+    <string name="search_placeholder">Task ara...</string>
+    <string name="qr_scan_desc">QR Tara</string>
+    <string name="clear_desc">Temizle</string>
+    <string name="menu_desc">Menü</string>
+    <string name="no_tasks_message">Gösterilecek görev yok.</string>
+    <string name="camera_permission_required">Kamera izni gerekli!</string>
+
+    <string name="menu_tasks">Görevler</string>
+    <string name="menu_logout">Çıkış Yap</string>
+    <string name="menu_languages">Diller</string>
+    <string name="user_default">Kullanıcı</string>
+    <string name="id_label">ID: </string>
+
+    <string name="error_unknown">Beklenmedik bir hata oluştu. Lütfen tekrar deneyin.</string>
+    <string name="error_token_missing">Token bulunamadı. Lütfen tekrar giriş yapın.</string>
+    <string name="error_session_expired">Oturum süresi dolmuş, lütfen tekrar giriş yapın.</string>
+</resources>

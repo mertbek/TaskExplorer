@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Task Explorer</string>
+
+    <string name="login_title">Task Explorer</string>
+    <string name="username_label">Benutzername</string>
+    <string name="password_label">Passwort</string>
+    <string name="login_button">Anmelden</string>
+    <string name="login_success">Anmeldung erfolgreich!</string>
+    <string name="login_failed">Anmeldung fehlgeschlagen! Prüfen Sie bitte Ihre Daten.</string>
+    <string name="error_empty_fields">Benutzername oder Passwort dürfen nicht leer sein!</string>
+    <string name="exit_press_again">Zum Beenden nochmals drücken</string>
+
+    <string name="search_placeholder">Aufgabe suchen...</string>
+    <string name="qr_scan_desc">QR Scannen</string>
+    <string name="clear_desc">Löschen</string>
+    <string name="menu_desc">Menü</string>
+    <string name="no_tasks_message">Keine Aufgaben anzuzeigen.</string>
+    <string name="camera_permission_required">Kameraberechtigung erforderlich!</string>
+
+    <string name="menu_tasks">Aufgaben</string>
+    <string name="menu_logout">Abmelden</string>
+    <string name="menu_languages">Sprachen</string>
+    <string name="user_default">Benutzer</string>
+    <string name="id_label">ID: </string>
+
+    <string name="error_unknown">Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es erneut.</string>
+    <string name="error_token_missing">Token nicht gefunden. Bitte erneut anmelden.</string>
+    <string name="error_session_expired">Sitzung abgelaufen, bitte erneut anmelden.</string>
+</resources>

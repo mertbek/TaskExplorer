@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mertbek.taskexplorer.R
 import com.mertbek.taskexplorer.data.local.SessionManager
 import com.mertbek.taskexplorer.data.model.LoginRequest
 import com.mertbek.taskexplorer.data.repository.TaskRepository
@@ -17,15 +18,15 @@ class LoginViewModel(
     private val _loginResult = MutableLiveData<Boolean>()
     val loginResult: LiveData<Boolean> get() = _loginResult
 
-    private val _errorMessage = MutableLiveData<String>()
-    val errorMessage: LiveData<String> get() = _errorMessage
+    private val _errorMessage = MutableLiveData<Int?>()
+    val errorMessage: LiveData<Int?> get() = _errorMessage
 
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> get() = _isLoading
 
     fun login(username: String, password: String) {
         if (username.isBlank() || password.isBlank()) {
-            _errorMessage.value = "Kullanıcı adı veya şifre boş olamaz"
+            _errorMessage.value = R.string.error_empty_fields
             return
         }
 
@@ -49,11 +50,12 @@ class LoginViewModel(
 
                     sessionManager.saveAuthToken(token)
                     _loginResult.value = true
+                    _errorMessage.value = null
                 } else {
-                    _errorMessage.value = "Giriş başarısız! Lütfen bilgileri kontrol edin."
+                    _errorMessage.value = R.string.login_failed
                 }
             } catch (e: Exception) {
-                _errorMessage.value = "Bir hata oluştu: ${e.message}"
+                _errorMessage.value = R.string.error_unknown
             } finally {
                 _isLoading.value = false
             }

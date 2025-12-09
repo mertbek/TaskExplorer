@@ -1,6 +1,8 @@
 package com.mertbek.taskexplorer.ui.main
 
 import android.Manifest
+import android.app.Activity
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -20,6 +22,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.OutlinedButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.ExitToApp
@@ -56,12 +59,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.core.content.ContextCompat
+import com.mertbek.taskexplorer.R
 import com.mertbek.taskexplorer.data.model.TaskItem
 import com.mertbek.taskexplorer.ui.camera.CameraPreviewScreen
 import com.mertbek.taskexplorer.ui.login.LoginActivity
@@ -75,10 +80,11 @@ fun MainScreen(
 ) {
     val taskList by viewModel.taskList.observeAsState(emptyList())
     val isLoading by viewModel.isLoading.observeAsState(false)
-    val errorMessage by viewModel.errorMessage.observeAsState()
+    val errorMessageId by viewModel.errorMessage.observeAsState()
 
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
+    val activity = LocalContext.current as? Activity
 
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -95,7 +101,7 @@ fun MainScreen(
         if (isGranted) {
             showCamera = true
         } else {
-            Toast.makeText(context, "Kamera izni gerekli!", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, R.string.camera_permission_required, Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -104,11 +110,9 @@ fun MainScreen(
         onRefresh = { viewModel.refreshTasks() }
     )
 
-    LaunchedEffect(errorMessage) {
-        errorMessage?.let {
-            if (it.isNotBlank()) {
-                Toast.makeText(context, it, Toast.LENGTH_LONG).show()
-            }
+    LaunchedEffect(errorMessageId) {
+        errorMessageId?.let { id ->
+            Toast.makeText(context, context.getString(id), Toast.LENGTH_LONG).show()
         }
     }
 
@@ -140,13 +144,13 @@ fun MainScreen(
                         .padding(24.dp)
                 ) {
                     Text(
-                        text = userInfo["name"] ?: "Kullanıcı",
+                        text = userInfo["name"] ?: stringResource(id = R.string.user_default),
                         style = MaterialTheme.typography.headlineSmall,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onPrimaryContainer
                     )
                     Text(
-                        text = "ID: ${userInfo["id"]}",
+                        text = stringResource(id = R.string.id_label) + " ${userInfo["id"]}",
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onPrimaryContainer
                     )
@@ -160,22 +164,46 @@ fun MainScreen(
                 HorizontalDivider(modifier = Modifier.padding(4.dp))
 
                 NavigationDrawerItem(
-                    label = { Text("Görevler") },
+                    label = { Text( text = stringResource(id = R.string.menu_tasks)) },
                     selected = true,
                     onClick = { scope.launch { drawerState.close() } }
                 )
 
                 Spacer(modifier = Modifier.weight(1f))
 
+                Text(
+                    text = stringResource(id = R.string.menu_languages),
+                    style = MaterialTheme.typography.titleSmall,
+                    modifier = Modifier.padding(horizontal = 28.dp, vertical = 12.dp),
+                    color = MaterialTheme.colorScheme.primary
+                )
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 24.dp),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    fun changeLanguage(code: String) {
+                        viewModel.setLanguage(code)
+                        scope.launch { drawerState.close() }
+                        activity?.recreate()
+                    }
+
+                    OutlinedButton(onClick = { changeLanguage("en") }) { Text("EN") }
+                    OutlinedButton(onClick = { changeLanguage("tr") }) { Text("TR") }
+                    OutlinedButton(onClick = { changeLanguage("de") }) { Text("DE") }
+                }
+
                 HorizontalDivider()
                 NavigationDrawerItem(
-                    label = { Text("Çıkış Yap") },
+                    label = { Text(text = stringResource(id = R.string.menu_logout)) },
                     icon = { Icon(Icons.Default.ExitToApp, null) },
                     selected = false,
                     onClick = {
                         viewModel.logout()
-                        val intent = android.content.Intent(context, LoginActivity::class.java)
-                        intent.flags = android.content.Intent.FLAG_ACTIVITY_NEW_TASK or android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        val intent = Intent(context, LoginActivity::class.java)
+                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                         context.startActivity(intent)
                     }
                 )
@@ -196,10 +224,10 @@ fun MainScreen(
                     },
                     active = false,
                     onActiveChange = { isSearchActive = it },
-                    placeholder = { Text("Task ara...") },
+                    placeholder = { Text( text = stringResource(id = R.string.search_placeholder)) },
                     leadingIcon = {
                         IconButton(onClick = { scope.launch { drawerState.open() } }) {
-                            Icon(Icons.Default.Menu, contentDescription = "Menü")
+                            Icon(Icons.Default.Menu, contentDescription = stringResource(id = R.string.menu_desc))
                         }
                     },
                     trailingIcon = {
@@ -210,7 +238,7 @@ fun MainScreen(
                                     viewModel.searchTasks("")
                                     focusManager.clearFocus()
                                 }) {
-                                    Icon(Icons.Default.Clear, contentDescription = "Temizle")
+                                    Icon(Icons.Default.Clear, contentDescription = stringResource(id = R.string.clear_desc))
                                 }
                             }
                             IconButton(onClick = {
@@ -218,7 +246,7 @@ fun MainScreen(
                                 if (permissionCheck == PackageManager.PERMISSION_GRANTED) showCamera = true
                                 else permissionLauncher.launch(Manifest.permission.CAMERA)
                             }) {
-                                Icon(Icons.Default.QrCodeScanner, contentDescription = "QR Scan")
+                                Icon(Icons.Default.QrCodeScanner, contentDescription = stringResource(id = R.string.qr_scan_desc))
                             }
                         }
                     },
@@ -251,7 +279,7 @@ fun MainScreen(
                 )
 
                 if (taskList.isEmpty() && !isLoading) {
-                    Text(text = "Gösterilecek görev yok.", modifier = Modifier.align(Alignment.Center), color = Color.Gray)
+                    Text(text = stringResource(id = R.string.no_tasks_message), modifier = Modifier.align(Alignment.Center), color = Color.Gray)
                 }
             }
         }
@@ -287,7 +315,7 @@ fun TaskItemRow(task: TaskItem) {
 
             Column {
                 Text(
-                    text = task.task ?: "İsimsiz Görev",
+                    text = task.task ?: stringResource(R.string.no_tasks_message),
                     fontWeight = FontWeight.Bold,
                     fontSize = 16.sp
                 )

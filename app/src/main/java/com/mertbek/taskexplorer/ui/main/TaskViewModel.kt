@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mertbek.taskexplorer.R
 import com.mertbek.taskexplorer.data.local.SessionManager
 import com.mertbek.taskexplorer.data.model.TaskItem
 import com.mertbek.taskexplorer.data.repository.TaskRepository
@@ -20,8 +21,8 @@ class TaskViewModel(
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> get() = _isLoading
 
-    private val _errorMessage = MutableLiveData<String?>()
-    val errorMessage: LiveData<String?> get() = _errorMessage
+    private val _errorMessage = MutableLiveData<Int?>()
+    val errorMessage: LiveData<Int?> get() = _errorMessage
 
     init {
         loadTasksFromDb()
@@ -38,7 +39,7 @@ class TaskViewModel(
     fun refreshTasks() {
         val token = sessionManager.fetchAuthToken()
         if (token == null) {
-            _errorMessage.value = "Oturum süresi dolmuş, lütfen tekrar giriş yapın."
+            _errorMessage.value = R.string.error_session_expired
             return
         }
 
@@ -49,7 +50,7 @@ class TaskViewModel(
                 loadTasksFromDb()
                 _errorMessage.value = null
             } catch (e: Exception) {
-                _errorMessage.value = "Güncelleme hatası: ${e.message}"
+                _errorMessage.value = R.string.error_unknown
             } finally {
                 _isLoading.value = false
             }
@@ -72,5 +73,9 @@ class TaskViewModel(
 
     fun logout() {
         sessionManager.clearSession()
+    }
+
+    fun setLanguage(code: String) {
+        sessionManager.saveLanguage(code)
     }
 }

@@ -12,7 +12,6 @@ import com.mertbek.taskexplorer.data.network.RetrofitClient
 import com.mertbek.taskexplorer.data.repository.TaskRepository
 import com.mertbek.taskexplorer.data.worker.TaskWorker
 import java.util.concurrent.TimeUnit
-import kotlin.getValue
 
 class TaskExplorerApp : Application() {
 
