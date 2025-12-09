@@ -1,6 +1,10 @@
 package com.mertbek.taskexplorer.ui.main
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import android.graphics.Color as AndroidColor
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -47,13 +51,16 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
+import androidx.core.content.ContextCompat
 import com.mertbek.taskexplorer.data.model.TaskItem
+import com.mertbek.taskexplorer.ui.camera.CameraPreviewScreen
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
 fun MainScreen(
-    viewModel: TaskViewModel,
-    onQrClick: () -> Unit
+    viewModel: TaskViewModel
 ) {
     val taskList by viewModel.taskList.observeAsState(emptyList())
     val isLoading by viewModel.isLoading.observeAsState(false)
@@ -63,6 +70,17 @@ fun MainScreen(
 
     var searchQuery by remember { mutableStateOf("") }
     var isSearchActive by remember { mutableStateOf(false) }
+    var showCamera by remember { mutableStateOf(false) }
+
+    val permissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            showCamera = true
+        } else {
+            Toast.makeText(context, "Kamera izni gerekli!", Toast.LENGTH_SHORT).show()
+        }
+    }
 
     val pullRefreshState = rememberPullRefreshState(
         refreshing = isLoading,
@@ -73,6 +91,23 @@ fun MainScreen(
         errorMessage?.let {
             if (it.isNotBlank()) {
                 Toast.makeText(context, it, Toast.LENGTH_LONG).show()
+            }
+        }
+    }
+
+    if (showCamera) {
+        Dialog(
+            onDismissRequest = { showCamera = false },
+            properties = DialogProperties(usePlatformDefaultWidth = false)
+        ) {
+            Box(modifier = Modifier.fillMaxSize()) {
+                CameraPreviewScreen(
+                    onQrDetected = { qrCode ->
+                        searchQuery = qrCode
+                        viewModel.searchTasks(qrCode)
+                        showCamera = false
+                    }
+                )
             }
         }
     }
@@ -91,7 +126,14 @@ fun MainScreen(
                 placeholder = { Text("Task ara...") },
                 leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
                 trailingIcon = {
-                    IconButton(onClick = onQrClick) {
+                    IconButton(onClick = {
+                        val permissionCheck = ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA)
+                        if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
+                            showCamera = true
+                        } else {
+                            permissionLauncher.launch(Manifest.permission.CAMERA)
+                        }
+                    }) {
                         Icon(Icons.Default.QrCodeScanner, contentDescription = "QR Scan")
                     }
                 },

@@ -24,9 +24,6 @@ class MainActivity : ComponentActivity() {
 
                     MainScreen(
                         viewModel = viewModel,
-                        onQrClick = {
-                            Toast.makeText(this, "QR Tarama yakında...", Toast.LENGTH_SHORT).show()
-                        }
                     )
                 }
             }
