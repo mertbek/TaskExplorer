@@ -24,6 +24,9 @@ class TaskViewModel(
     private val _errorMessage = MutableLiveData<Int?>()
     val errorMessage: LiveData<Int?> get() = _errorMessage
 
+    private val _sessionExpired = MutableLiveData<Boolean>()
+    val sessionExpired: LiveData<Boolean> get() = _sessionExpired
+
     init {
         loadTasksFromDb()
 
@@ -40,6 +43,7 @@ class TaskViewModel(
         val token = sessionManager.fetchAuthToken()
         if (token == null) {
             _errorMessage.value = R.string.error_session_expired
+            _sessionExpired.value = true
             return
         }
 
@@ -50,7 +54,14 @@ class TaskViewModel(
                 loadTasksFromDb()
                 _errorMessage.value = null
             } catch (e: Exception) {
-                _errorMessage.value = R.string.error_unknown
+                val errorMsg = e.message ?: ""
+
+                if (errorMsg.contains("401")) {
+                    sessionManager.clearSession()
+                    _sessionExpired.value = true
+                } else {
+                    _errorMessage.value = R.string.error_unknown
+                }
             } finally {
                 _isLoading.value = false
             }

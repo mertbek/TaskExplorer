@@ -95,6 +95,8 @@ fun MainScreen(
     var isSearchActive by remember { mutableStateOf(false) }
     var showCamera by remember { mutableStateOf(false) }
 
+    val sessionExpired by viewModel.sessionExpired.observeAsState(false)
+
     val permissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission()
     ) { isGranted ->
@@ -113,6 +115,16 @@ fun MainScreen(
     LaunchedEffect(errorMessageId) {
         errorMessageId?.let { id ->
             Toast.makeText(context, context.getString(id), Toast.LENGTH_LONG).show()
+        }
+    }
+
+    LaunchedEffect(sessionExpired) {
+        if (sessionExpired) {
+            Toast.makeText(context, context.getString(R.string.error_session_expired), Toast.LENGTH_LONG).show()
+
+            val intent = Intent(context, LoginActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            context.startActivity(intent)
         }
     }
 
